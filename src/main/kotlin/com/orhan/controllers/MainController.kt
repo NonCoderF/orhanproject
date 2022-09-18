@@ -35,6 +35,7 @@ class MainController() {
 
     suspend fun sendMessage(senderId: String, message: String) {
 
+
         val directive = Gson().fromJson(message, Directive::class.java)
 
         members.values.forEach { member ->
