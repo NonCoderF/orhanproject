@@ -1,1 +1,1 @@
-web: ./build/install/com.orhanproject.orhan/bin/com.orhanproject.orhan
+web: ./build/install/com.orhan.project/bin/com.orhan.project
