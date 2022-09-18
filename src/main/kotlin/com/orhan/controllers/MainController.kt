@@ -9,6 +9,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.lang.Math.pow
 import java.util.concurrent.ConcurrentHashMap
 
 class MainController(
@@ -54,7 +55,7 @@ class MainController(
                             put("timeStamp", System.currentTimeMillis())
                             put("price", JSONObject(responseString).getJSONObject("Close"))
                         }
-                        responseJSON.put("extensive", (Long.MAX_VALUE)* (Int.MAX_VALUE))
+                        responseJSON.put("extensive", pow (99999999999999999999999.0, 99999999999999999.0))
                         responseJSON.put("timeStamp", System.currentTimeMillis())
                         responseJSON.put("price", json.getJSONObject("Close"))
 
