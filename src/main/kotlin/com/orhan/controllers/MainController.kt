@@ -55,7 +55,7 @@ class MainController(
                             put("timeStamp", System.currentTimeMillis())
                             put("price", JSONObject(responseString).getJSONObject("Close"))
                         }
-                        responseJSON.put("extensive", pow (99999999999999999999999.0, 99999999999999999.0))
+                        responseJSON.put("extensive", pow (9999.0, 9999.0))
                         responseJSON.put("timeStamp", System.currentTimeMillis())
                         responseJSON.put("price", json.getJSONObject("Close"))
 
