@@ -13,23 +13,19 @@ import java.util.concurrent.ConcurrentHashMap
 
 class MainController(
     val httpClient: HttpClient
-    ) {
+) {
 
     private val members = ConcurrentHashMap<String, Member>()
 
     fun onJoin(
-        userId: String,
-        sessionId: String,
-        socket: WebSocketSession
+        userId: String, sessionId: String, socket: WebSocketSession
     ) {
         if (members.containsKey(userId)) {
             throw MemberAlreadyConnectedException()
         }
 
         members[userId] = Member(
-            userId = userId,
-            sessionId = sessionId,
-            socket = socket
+            userId = userId, sessionId = sessionId, socket = socket
         )
     }
 
@@ -42,9 +38,9 @@ class MainController(
 
             if (member.userId in directive.receivers) {
 
-                while (true){
+                while (true) {
 
-                    while(true){
+                    while (true) {
 
                         val response: HttpResponse = httpClient.get(
                             "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
@@ -54,13 +50,16 @@ class MainController(
 
                         val json = JSONObject(responseString)
 
-                        val responseJSON= JSONObject()
+                        val responseJSON = JSONObject().apply {
+                            put("timeStamp", System.currentTimeMillis())
+                            put("price", JSONObject(responseString).getJSONObject("Close"))
+                        }
                         responseJSON.put("timeStamp", System.currentTimeMillis())
                         responseJSON.put("price", json.getJSONObject("Close"))
 
                         member.socket.send(Frame.Text(responseJSON.toString()))
 
-                        delay(30000)
+                        delay(1000)
                     }
                 }
 
