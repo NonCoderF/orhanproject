@@ -1,0 +1,1 @@
+web: ./build/install/com.orhanproject.orhan/bin/com.orhanproject.orhan
