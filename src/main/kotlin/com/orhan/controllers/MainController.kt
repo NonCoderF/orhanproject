@@ -11,7 +11,9 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.concurrent.ConcurrentHashMap
 
-class MainController(val responderCoroutine: CoroutineScope) {
+class MainController(
+    val httpClient: HttpClient
+    ) {
 
     private val members = ConcurrentHashMap<String, Member>()
 
@@ -44,7 +46,7 @@ class MainController(val responderCoroutine: CoroutineScope) {
 
                     while(true){
 
-                        val response: HttpResponse = HttpClient(CIO).get(
+                        val response: HttpResponse = httpClient.get(
                             "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
                         )
 
@@ -58,7 +60,7 @@ class MainController(val responderCoroutine: CoroutineScope) {
 
                         member.socket.send(Frame.Text(responseJSON.toString()))
 
-                        delay(1000)
+                        delay(10000)
                     }
                 }
 
