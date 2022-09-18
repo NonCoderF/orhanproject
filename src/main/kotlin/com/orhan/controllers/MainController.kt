@@ -17,6 +17,7 @@ import org.json.JSONObject
 class MainController() {
 
     private val members = ConcurrentHashMap<String, Member>()
+    val responderCoroutine = CoroutineScope(Dispatchers.IO)
 
     fun onJoin(
         userId: String,
@@ -33,9 +34,6 @@ class MainController() {
             socket = socket
         )
     }
-
-
-    val responderCoroutine = CoroutineScope(Dispatchers.IO)
 
     suspend fun sendMessage(senderId: String, message: String) {
 

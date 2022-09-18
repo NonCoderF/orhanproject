@@ -1,0 +1,2 @@
+wsc -er ws://orhanproject.herokuapp.com/socket?userId=dev
+{"receivers":["dev"], "data": "1"}
