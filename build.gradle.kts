@@ -41,6 +41,7 @@ dependencies {
     implementation("com.h2database:h2:$h2_version")
 
     implementation ("com.google.code.gson:gson:2.3.1")
+    implementation ("org.json:json:20210307")
 
     // Koin core features
     implementation("io.insert-koin:koin-core:$koinVersion")

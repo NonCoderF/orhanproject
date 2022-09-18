@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class MainController() {
 
@@ -45,12 +46,18 @@ class MainController() {
                 CoroutineScope(Dispatchers.IO).launch {
                     while (true){
                         val response: HttpResponse = HttpClient(CIO).get(
-                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS"
+                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
                         )
 
                         val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
 
-                        member.socket.send(Frame.Text(responseString))
+                        val json = JSONObject(responseString)
+
+                        val responseJSON= JSONObject()
+                        responseJSON.put("timeStamp", System.currentTimeMillis())
+                        responseJSON.put("price", json.getJSONObject("Close"))
+
+                        member.socket.send(Frame.Text(responseJSON.toString()))
                         delay(1000)
                     }
                 }
