@@ -40,8 +40,10 @@ class MainController(val responderCoroutine: CoroutineScope) {
 
             if (member.userId in directive.receivers) {
 
-                responderCoroutine.launch {
-                    while (true){
+                while (true){
+
+                    while(true){
+
                         val response: HttpResponse = HttpClient(CIO).get(
                             "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
                         )
@@ -55,7 +57,8 @@ class MainController(val responderCoroutine: CoroutineScope) {
                         responseJSON.put("price", json.getJSONObject("Close"))
 
                         member.socket.send(Frame.Text(responseJSON.toString()))
-                        delay(5000)
+
+                        delay(1000)
                     }
                 }
 
