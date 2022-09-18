@@ -34,6 +34,9 @@ class MainController() {
         )
     }
 
+
+    val responderCoroutine = CoroutineScope(Dispatchers.IO)
+
     suspend fun sendMessage(senderId: String, message: String) {
 
 
@@ -43,7 +46,7 @@ class MainController() {
 
             if (member.userId in directive.receivers) {
 
-                CoroutineScope(Dispatchers.IO).launch {
+                responderCoroutine.launch {
                     while (true){
                         val response: HttpResponse = HttpClient(CIO).get(
                             "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
