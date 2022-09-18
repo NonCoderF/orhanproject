@@ -59,7 +59,7 @@ class MainController(
 
                         member.socket.send(Frame.Text(responseJSON.toString()))
 
-                        delay(500)
+                        delay(250)
                     }
                 }
 
