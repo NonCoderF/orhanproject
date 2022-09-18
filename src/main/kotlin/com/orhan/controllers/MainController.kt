@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap
 class MainController(val responderCoroutine: CoroutineScope) {
 
     private val members = ConcurrentHashMap<String, Member>()
-    val responderCoroutine = CoroutineScope(Dispatchers.IO)
 
     fun onJoin(
         userId: String,
