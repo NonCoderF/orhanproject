@@ -49,7 +49,7 @@ fun Route.orderSocket(mainController: MainController) {
 }
 
 fun Route.getTesting() {
-    get("/") {
+    get("/api") {
         call.respond("I'm alive!")
     }
 }
