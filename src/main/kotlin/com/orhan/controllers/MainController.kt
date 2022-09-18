@@ -1,22 +1,20 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
-import com.orhan.data.*
-import io.ktor.http.cio.websocket.*
-import java.util.concurrent.ConcurrentHashMap
+import com.orhan.data.Directive
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import io.ktor.http.cio.websocket.*
+import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.util.concurrent.ConcurrentHashMap
 
 class MainController() {
 
     private val members = ConcurrentHashMap<String, Member>()
+    val responderCoroutine = CoroutineScope(Dispatchers.IO)
 
     fun onJoin(
         userId: String,
@@ -43,21 +41,23 @@ class MainController() {
 
             if (member.userId in directive.receivers) {
 
-                while (true){
-                    val response: HttpResponse = HttpClient(CIO).get(
-                        "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
-                    )
+                responderCoroutine.launch {
+                    while (true){
+                        val response: HttpResponse = HttpClient(CIO).get(
+                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
+                        )
 
-                    val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
+                        val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
 
-                    val json = JSONObject(responseString)
+                        val json = JSONObject(responseString)
 
-                    val responseJSON= JSONObject()
-                    responseJSON.put("timeStamp", System.currentTimeMillis())
-                    responseJSON.put("price", json.getJSONObject("Close"))
+                        val responseJSON= JSONObject()
+                        responseJSON.put("timeStamp", System.currentTimeMillis())
+                        responseJSON.put("price", json.getJSONObject("Close"))
 
-                    member.socket.send(Frame.Text(responseJSON.toString()))
-                    Thread.sleep(1000)
+                        member.socket.send(Frame.Text(responseJSON.toString()))
+                        delay(5000)
+                    }
                 }
 
             }
