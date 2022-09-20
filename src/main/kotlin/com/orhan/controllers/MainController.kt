@@ -44,7 +44,7 @@ class MainController(
                     while (true) {
 
                         val response: HttpResponse = httpClient.get(
-                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=1m"
+                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=5m"
                         )
 
                         val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
