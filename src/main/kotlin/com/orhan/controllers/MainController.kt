@@ -1,7 +1,7 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
-import com.orhan.calculations.fetch
+import com.orhan.calculations.fetchClosePrice
 import com.orhan.data.Directive
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -45,16 +45,23 @@ class MainController(
 
                         while (true) {
 
-                            member.socket.send(Frame.Text(Gson().toJson(
-                                ArrayList<Deferred<JSONObject?>>().apply {
-                                    add(async { fetch(httpClient = httpClient, period = "5m") })
-                                    add(async { fetch(httpClient = httpClient, period = "15m") })
-                                    add(async { fetch(httpClient = httpClient, period = "30m") })
-                                    add(async { fetch(httpClient = httpClient, period = "60m") })
-                                    add(async { fetch(httpClient = httpClient, period = "90m") })
-                                    add(async { fetch(httpClient = httpClient, period = "1h") })
-                                }.awaitAll()
-                            )))
+                            val a = async { fetchClosePrice(httpClient = httpClient, period = "5m") }
+                            val b = async { fetchClosePrice(httpClient = httpClient, period = "15m") }
+                            val c = async { fetchClosePrice(httpClient = httpClient, period = "30m") }
+                            val d = async { fetchClosePrice(httpClient = httpClient, period = "60m") }
+                            val e = async { fetchClosePrice(httpClient = httpClient, period = "90m") }
+                            val f = async { fetchClosePrice(httpClient = httpClient, period = "1h") }
+
+                            val x = mapOf(
+                                "5m" to a.await(),
+                                "15m" to b.await(),
+                                "30m" to c.await(),
+                                "60m" to d.await(),
+                                "90m" to e.await(),
+                                "1h" to f.await()
+                            )
+
+                            member.socket.send(Frame.Text(x.toString()))
 
                             delay(10000)
                         }
