@@ -8,9 +8,9 @@ import org.json.JSONObject
 suspend fun fetchClosePrice(
     httpClient: HttpClient,
     period: String = "5m"
-): Map<String, Float> {
+): String {
     val response: HttpResponse = httpClient.get(
-        "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=${period}"
+        "http://stock-rock-007.herokuapp.com?ticker=ADANIPORTS.NS?interval=1d&period=${period}"
     )
 
     val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
@@ -29,10 +29,19 @@ suspend fun fetchClosePrice(
     val r3 = json.getJSONObject("Low").names()
     val lowPrice = json.getJSONObject("Low").getFloat("${r3[r3.length() - 1]}")
 
-    return mapOf(
-        "open" to openPrice,
-        "high" to highPrice,
-        "low" to lowPrice,
-        "close" to closePrice
-    )
+    return calculateTrend(openPrice, highPrice, lowPrice, closePrice)
+}
+
+
+suspend fun calculateTrend(
+    open : Float,
+    high : Float,
+    low : Float,
+    close : Float
+): String{
+    return if (close > open){
+        "uptrend"
+    } else if ( close == open) {
+        "consolidation"
+    } else "downtrend"
 }
