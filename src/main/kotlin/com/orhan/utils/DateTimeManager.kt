@@ -4,11 +4,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object DateTimeManager {
-    val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
-    val timeFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
-    val timeFormatSecs = SimpleDateFormat("hh:mm:ss", Locale.ENGLISH)
-    val dateFormat24 = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH)
-    val dateFormatReverse24 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+    val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    }
+    val timeFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    }
+    val timeFormatSecs = SimpleDateFormat("hh:mm:ss", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    }
+    val dateFormat24 = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    }
+    val dateFormatReverse24 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+    }
 
     fun convertDateObject(date: String?, inputFormat: SimpleDateFormat, outputFormat: SimpleDateFormat): String? {
         try {
@@ -31,8 +41,7 @@ object DateTimeManager {
     }
 
     fun convertStringToDate(dateString: String?, format: SimpleDateFormat): Date? {
-        if(dateString == null)
-            return null
+        if (dateString == null) return null
         return try {
             format.parse(dateString)
         } catch (e: Exception) {

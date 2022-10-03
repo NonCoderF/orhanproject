@@ -63,10 +63,10 @@ class MainController(
                                     "60m" to d.await(),
                                     "90m" to e.await(),
                                     "1h" to f.await()
-                                ), "time" to DateTimeManager.convertDateObject(
-                                    Date().apply {
-                                        TimeZone.getTimeZone("Asia/Kolkata")
-                                    }.time, DateTimeManager.timeFormatSecs
+                                ),
+                                "time" to DateTimeManager.convertDateObject(
+                                    Date().time,
+                                    DateTimeManager.timeFormatSecs
                                 )
                             )
 
