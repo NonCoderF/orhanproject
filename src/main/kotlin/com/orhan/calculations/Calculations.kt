@@ -44,4 +44,5 @@ suspend fun calculateTrend(
     } else if ( close == open) {
         "consolidation"
     } else "downtrend"
+
 }
