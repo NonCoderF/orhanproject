@@ -10,7 +10,7 @@ suspend fun fetch(
     period: String = "5m"
 ): JSONObject? {
     val response: HttpResponse = httpClient.get(
-        "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=5m"
+        "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=${period}"
     )
 
     val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
