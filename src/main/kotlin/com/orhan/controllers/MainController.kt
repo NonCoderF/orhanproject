@@ -1,6 +1,7 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
+import com.orhan.calculations.fetch
 import com.orhan.data.Directive
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -32,38 +33,40 @@ class MainController(
 
     suspend fun sendMessage(senderId: String, message: String) {
 
+        CoroutineScope(Dispatchers.IO).launch {
 
-        val directive = Gson().fromJson(message, Directive::class.java)
+            val directive = Gson().fromJson(message, Directive::class.java)
 
-        members.values.forEach { member ->
+            members.values.forEach { member ->
 
-            if (member.userId in directive.receivers) {
-
-                while (true) {
+                if (member.userId in directive.receivers) {
 
                     while (true) {
 
-                        val response: HttpResponse = httpClient.get(
-                            "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=5m"
-                        )
+                        while (true) {
 
-                        val responseString = response.content.readUTF8Line(response.content.availableForRead).toString()
+                            val arrayList = ArrayList<Deferred<JSONObject?>>()
+                            arrayList.apply {
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient) })
+                            }
 
-                        val json = JSONObject(responseString)
+                            val x = arrayList.awaitAll()
 
-                        val responseJSON = JSONObject().apply {
-                            put("timeStamp", System.currentTimeMillis())
-                            put("price", JSONObject(responseString).getJSONObject("Close"))
+                            member.socket.send(Frame.Text(Gson().toJson(x)))
+
+                            delay(1000)
                         }
-                        responseJSON.put("timeStamp", System.currentTimeMillis())
-                        responseJSON.put("price", json.getJSONObject("Close"))
-
-                        member.socket.send(Frame.Text(responseJSON.toString()))
-
-                        delay(1000)
                     }
-                }
 
+                }
             }
         }
     }
