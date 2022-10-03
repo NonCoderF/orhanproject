@@ -3,6 +3,7 @@ package com.orhan.controllers
 import com.google.gson.Gson
 import com.orhan.calculations.fetchClosePrice
 import com.orhan.data.Directive
+import com.orhan.utils.DateTimeManager
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -11,6 +12,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.lang.Math.pow
+import java.text.DateFormat
 import java.util.concurrent.ConcurrentHashMap
 
 class MainController(
@@ -53,12 +55,18 @@ class MainController(
                             val f = async { fetchClosePrice(httpClient = httpClient, period = "1h") }
 
                             val x = mapOf(
-                                "5m" to a.await(),
-                                "15m" to b.await(),
-                                "30m" to c.await(),
-                                "60m" to d.await(),
-                                "90m" to e.await(),
-                                "1h" to f.await()
+                                "data" to mapOf(
+                                    "5m" to a.await(),
+                                    "15m" to b.await(),
+                                    "30m" to c.await(),
+                                    "60m" to d.await(),
+                                    "90m" to e.await(),
+                                    "1h" to f.await()
+                                ),
+                                "time" to DateTimeManager.convertDateObject(
+                                    System.currentTimeMillis(),
+                                    DateTimeManager.timeFormatSecs
+                                )
                             )
 
                             member.socket.send(Frame.Text(x.toString()))

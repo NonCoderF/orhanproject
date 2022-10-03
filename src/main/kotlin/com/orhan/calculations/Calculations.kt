@@ -33,7 +33,7 @@ suspend fun fetchClosePrice(
 }
 
 
-suspend fun calculateTrend(
+fun calculateTrend(
     open : Float,
     high : Float,
     low : Float,
