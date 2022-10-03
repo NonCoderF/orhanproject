@@ -6,5 +6,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Directive(
     @Expose val receivers : ArrayList<String>,
-    @Expose val data : String
 )

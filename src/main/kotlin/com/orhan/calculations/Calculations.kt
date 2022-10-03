@@ -7,6 +7,7 @@ import org.json.JSONObject
 
 suspend fun fetch(
     httpClient: HttpClient,
+    period: String = "5m"
 ): JSONObject? {
     val response: HttpResponse = httpClient.get(
         "http://stock-rock-007.herokuapp.com?ticker=SBIN.NS?interval=1d&period=5m"

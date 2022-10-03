@@ -47,22 +47,19 @@ class MainController(
 
                             val arrayList = ArrayList<Deferred<JSONObject?>>()
                             arrayList.apply {
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
-                                add(async { fetch(httpClient) })
+                                add(async { fetch(httpClient = httpClient, period = "5m") })
+                                add(async { fetch(httpClient = httpClient, period = "15m") })
+                                add(async { fetch(httpClient = httpClient, period = "30m") })
+                                add(async { fetch(httpClient = httpClient, period = "60m") })
+                                add(async { fetch(httpClient = httpClient, period = "90m") })
+                                add(async { fetch(httpClient = httpClient, period = "1h") })
                             }
 
                             val x = arrayList.awaitAll()
 
                             member.socket.send(Frame.Text(Gson().toJson(x)))
 
-                            delay(1000)
+                            delay(5000)
                         }
                     }
 
