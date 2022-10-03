@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.lang.Math.pow
 import java.text.DateFormat
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class MainController(
@@ -62,10 +63,10 @@ class MainController(
                                     "60m" to d.await(),
                                     "90m" to e.await(),
                                     "1h" to f.await()
-                                ),
-                                "time" to DateTimeManager.convertDateObject(
-                                    System.currentTimeMillis(),
-                                    DateTimeManager.timeFormatSecs
+                                ), "time" to DateTimeManager.convertDateObject(
+                                    Date().apply {
+                                        TimeZone.getTimeZone("Asia/Kolkata")
+                                    }.time, DateTimeManager.timeFormatSecs
                                 )
                             )
 
