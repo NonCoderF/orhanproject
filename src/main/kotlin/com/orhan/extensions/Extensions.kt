@@ -15,3 +15,9 @@ fun Float.roundOffDecimal(): Float {
     df.roundingMode = RoundingMode.CEILING
     return df.format(this).toFloat()
 }
+
+fun Float.roundOffDecimalTo3Places(): Float {
+    val df = DecimalFormat("#.###")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(this).toFloat()
+}

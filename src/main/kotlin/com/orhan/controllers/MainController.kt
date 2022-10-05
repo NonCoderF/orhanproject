@@ -1,18 +1,20 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
-import com.orhan.calculations.calculateTrend
+import com.orhan.calculations.calculate
 import com.orhan.data.Directive
 import com.orhan.parser.parsePrice
 import com.orhan.parser.parseWindow
 import com.orhan.utils.DateTimeManager
 import io.ktor.client.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MainController(
@@ -56,25 +58,27 @@ class MainController(
                             val last5min = parseWindow(json = prices, interval = "5m")
                             val last1min = parseWindow(json = prices, interval = "1m")
 
-                            val r : MutableList<String> = ArrayList()
+                            val r: MutableList<String> = ArrayList()
 
                             r.apply {
-                                add(calculateTrend(day))
-                                add(calculateTrend(last90min))
-                                add(calculateTrend(last60min))
-                                add(calculateTrend(last15min))
-                                add(calculateTrend(last5min))
-                                add(calculateTrend(last1min))
+                                add(calculate(day))
+                                add(calculate(last90min))
+                                add(calculate(last60min))
+                                add(calculate(last15min))
+                                add(calculate(last5min))
+                                add(calculate(last1min))
                             }
 
                             val a = JSONObject()
 
                             a.put("data", r)
 
-                            a.put("time", DateTimeManager.convertDateObject(
-                                Date().time,
-                                DateTimeManager.timeFormatSecs
-                            ))
+                            a.put(
+                                "time", DateTimeManager.convertDateObject(
+                                    Date().time,
+                                    DateTimeManager.timeFormatSecs
+                                )
+                            )
 
                             member.socket.send(Frame.Text(a.toString(2)))
 
