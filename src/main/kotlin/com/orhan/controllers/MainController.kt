@@ -1,20 +1,18 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
-import com.orhan.calculations.fetchClosePrice
+import com.orhan.calculations.calculateTrend
 import com.orhan.data.Directive
+import com.orhan.parser.parsePrice
+import com.orhan.parser.parseWindow
 import com.orhan.utils.DateTimeManager
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.lang.Math.pow
-import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.set
 
 class MainController(
     val httpClient: HttpClient
@@ -48,29 +46,34 @@ class MainController(
 
                         while (true) {
 
-                            val a = async { fetchClosePrice(httpClient = httpClient, period = "5m") }
-                            val b = async { fetchClosePrice(httpClient = httpClient, period = "15m") }
-                            val c = async { fetchClosePrice(httpClient = httpClient, period = "30m") }
-                            val d = async { fetchClosePrice(httpClient = httpClient, period = "60m") }
-                            val e = async { fetchClosePrice(httpClient = httpClient, period = "90m") }
-                            val f = async { fetchClosePrice(httpClient = httpClient, period = "1h") }
+                            val prices = parsePrice()
 
-                            val x = mapOf(
-                                "data" to mapOf(
-                                    "5m" to a.await(),
-                                    "15m" to b.await(),
-                                    "30m" to c.await(),
-                                    "60m" to d.await(),
-                                    "90m" to e.await(),
-                                    "1h" to f.await()
-                                ),
-                                "time" to DateTimeManager.convertDateObject(
-                                    Date().time,
-                                    DateTimeManager.timeFormatSecs
-                                )
-                            )
+                            val day = parseWindow(json = prices, interval = "1d")
+                            val last90min = parseWindow(json = prices, interval = "90m")
+                            val last60min = parseWindow(json = prices, interval = "60m")
+                            val last15min = parseWindow(json = prices, interval = "15m")
+                            val last5min = parseWindow(json = prices, interval = "5m")
+                            val last1min = parseWindow(json = prices, interval = "1m")
 
-                            member.socket.send(Frame.Text(x.toString()))
+                            val a = JSONObject()
+
+                            a.put("data", JSONObject().apply {
+                                put("day      ", calculateTrend(day.also {
+                                    a.put("close", it.close)
+                                }))
+                                put("last90min", calculateTrend(last90min))
+                                put("last60min", calculateTrend(last60min))
+                                put("last15min", calculateTrend(last15min))
+                                put("last5min ", calculateTrend(last5min))
+                                put("last1min ", calculateTrend(last1min))
+                            })
+
+                            a.put("time", DateTimeManager.convertDateObject(
+                                Date().time,
+                                DateTimeManager.timeFormatSecs
+                            ))
+
+                            member.socket.send(Frame.Text(a.toString(2)))
 
                             delay(10000)
                         }

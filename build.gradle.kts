@@ -47,6 +47,9 @@ dependencies {
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
+
+    implementation ("com.beust:klaxon:5.5")
+
 }
 
 tasks.create("stage") {
