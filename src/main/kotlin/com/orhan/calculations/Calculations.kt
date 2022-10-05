@@ -12,7 +12,7 @@ fun calculate(price : Price): String{
     val diffCloseChar = if (diff > 0) "▲" else if (diff < 0) "▼" else "▶"
 
     val diffHigh = ((price.high - price.open)).roundOffDecimal()
-    val diffLow = ((price.low - price.open)).roundOffDecimal().to
+    val diffLow = ((price.low - price.open)).roundOffDecimal()
 
     val diffHighChar = if(diffHigh > 0) "↑" else "↓"
     val diffLowChar = if(diffLow > 0) "↑" else "↓"
