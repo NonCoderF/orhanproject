@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MainController(
@@ -55,18 +56,20 @@ class MainController(
                             val last5min = parseWindow(json = prices, interval = "5m")
                             val last1min = parseWindow(json = prices, interval = "1m")
 
+                            val r : MutableList<String> = ArrayList()
+
+                            r.apply {
+                                add(calculateTrend(day))
+                                add(calculateTrend(last90min))
+                                add(calculateTrend(last60min))
+                                add(calculateTrend(last15min))
+                                add(calculateTrend(last5min))
+                                add(calculateTrend(last1min))
+                            }
+
                             val a = JSONObject()
 
-                            a.put("data", JSONObject().apply {
-                                put("day      ", calculateTrend(day.also {
-                                    a.put("close", it.close)
-                                }))
-                                put("last90min", calculateTrend(last90min))
-                                put("last60min", calculateTrend(last60min))
-                                put("last15min", calculateTrend(last15min))
-                                put("last5min ", calculateTrend(last5min))
-                                put("last1min ", calculateTrend(last1min))
-                            })
+                            a.put("data", r)
 
                             a.put("time", DateTimeManager.convertDateObject(
                                 Date().time,

@@ -14,5 +14,5 @@ fun calculateTrend(price : Price): String{
 
     val diffChar = if (diff > 0) "▲" else if (diff < 0) "▼" else "▶"
 
-    return "$diffChar $open (${diff}/${diffInPercentage}%), ${price.time}"
+    return "$diffChar $open (${diff}/${diffInPercentage}%), ${price.time} : ${price.interval}"
 }

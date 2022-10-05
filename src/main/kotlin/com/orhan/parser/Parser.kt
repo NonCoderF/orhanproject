@@ -8,10 +8,15 @@ import kotlinx.coroutines.withContext
 import java.io.StringReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
-data class Price(val open: Float, val high: Float, val low: Float, val close: Float, val time: String)
+data class Price(
+    val open: Float,
+    val high: Float,
+    val low: Float,
+    val close: Float,
+    val time: String,
+    val interval: String
+)
 
 suspend fun parsePrice(): JsonObject {
     val url = URL("http://stock-rock-007.herokuapp.com?ticker=ADANIPORTS.NS&interval=1m&period=1d")
@@ -65,6 +70,11 @@ fun parseWindow(json: JsonObject, interval: String = ""): Price {
     println("$interval, Index is : ${r1[r1.size - findIndex(r1)].toLong()}, (" + time0 + " - " + time1 + ")" + ", Open : " + openPrice)
 
     return Price(
-        open = openPrice, high = highPrice, low = lowPrice, close = closePrice, time = "($time0 - $time1)"
+        open = openPrice,
+        high = highPrice,
+        low = lowPrice,
+        close = closePrice,
+        time = "($time0 - $time1)",
+        interval = interval
     )
 }
