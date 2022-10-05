@@ -20,7 +20,7 @@ fun calculate(price : Price): String{
     return "$diffCloseChar " +
             "${price.close.roundOffDecimal()} " +
             "(${diff}/${diffInPercentage}%), " +
-            "H $diffHighPercentageChar $diffHighPercentage" +
+            "H $diffHighPercentageChar $diffHighPercentage, " +
             "L $diffLowPercentageChar $diffLowPercentage" +
             "${price.time} : ${price.interval}"
 }
