@@ -82,7 +82,7 @@ class MainController(
 
                             member.socket.send(Frame.Text(a.toString(2)))
 
-                            delay(30000)
+                            delay(30 * 1000)
                         }
                     }
 
