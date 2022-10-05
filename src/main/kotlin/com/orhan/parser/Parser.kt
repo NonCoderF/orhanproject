@@ -67,8 +67,6 @@ fun parseWindow(json: JsonObject, interval: String = ""): Price {
     val time0 = DateTimeManager.convertDateObject(r1[r1.size - findIndex(r1)].toLong(), DateTimeManager.timeFormat)
     val time1 = DateTimeManager.convertDateObject(r1[r1.size - 1].toLong(), DateTimeManager.timeFormat)
 
-    println("$interval, Index is : ${r1[r1.size - findIndex(r1)].toLong()}, (" + time0 + " - " + time1 + ")" + ", Open : " + openPrice)
-
     return Price(
         open = openPrice,
         high = highPrice,
