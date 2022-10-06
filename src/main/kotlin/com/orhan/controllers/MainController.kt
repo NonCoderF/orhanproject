@@ -54,6 +54,7 @@ class MainController(
                             val day = parseWindow(json = prices, interval = "1d")
                             val last90min = parseWindow(json = prices, interval = "90m")
                             val last60min = parseWindow(json = prices, interval = "60m")
+                            val last30min = parseWindow(json = prices, interval = "30m")
                             val last15min = parseWindow(json = prices, interval = "15m")
                             val last5min = parseWindow(json = prices, interval = "5m")
                             val last1min = parseWindow(json = prices, interval = "1m")
@@ -64,6 +65,7 @@ class MainController(
                                 add(calculate(day))
                                 add(calculate(last90min))
                                 add(calculate(last60min))
+                                add(calculate(last30min))
                                 add(calculate(last15min))
                                 add(calculate(last5min))
                                 add(calculate(last1min))
@@ -82,7 +84,7 @@ class MainController(
 
                             member.socket.send(Frame.Text(a.toString(2)))
 
-                            delay(30 * 1000)
+                            delay(1 * 1000)
                         }
                     }
 

@@ -19,7 +19,7 @@ data class Price(
 )
 
 suspend fun parsePrice(): JsonObject {
-    val url = URL("http://stock-rock-007.herokuapp.com?ticker=ADANIPORTS.NS&interval=1m&period=1d")
+    val url = URL("http://127.0.0.1:5000?ticker=TATASTEEL.NS&interval=1m&period=1d")
 
     var responseString = ""
 
