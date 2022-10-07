@@ -73,6 +73,7 @@ class MainController(
 
                             val a = JSONObject()
 
+                            a.put("close", day.close)
                             a.put("data", r)
 
                             a.put(
@@ -84,7 +85,7 @@ class MainController(
 
                             member.socket.send(Frame.Text(a.toString(2)))
 
-                            delay(1 * 1000)
+                            delay(5 * 1000)
                         }
                     }
 

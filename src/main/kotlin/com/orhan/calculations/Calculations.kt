@@ -16,5 +16,5 @@ fun calculate(price: Price): String {
     val diffHighChar = if (diffHigh > 0) "↑" else "↓"
     val diffLowChar = if (diffLow > 0) "↑" else "↓"
 
-    return "$diffCloseChar " + "${price.open.roundOffDecimal()} " + "${price.close.roundOffDecimal()} " + "(${diff}/${diffInPercentage}%), " + "H $diffHighChar $diffHigh, " + "L $diffLowChar $diffLow   " + "${price.time} : ${price.interval}"
+    return "$diffCloseChar " + "${price.open.roundOffDecimal()} " + "(${diff}/${diffInPercentage}%), " + "H $diffHighChar $diffHigh, " + "L $diffLowChar $diffLow   " + "${price.time} : ${price.interval}"
 }
