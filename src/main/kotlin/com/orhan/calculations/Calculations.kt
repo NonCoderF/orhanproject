@@ -2,19 +2,38 @@ package com.orhan.calculations
 
 import com.orhan.extensions.roundOffDecimal
 import com.orhan.parser.Price
+import com.orhan.theme.color_default
+import com.orhan.theme.color_green
+import com.orhan.theme.color_red
+import com.orhan.theme.color_yellow
 
-fun calculate(price: Price): String {
+data class Projectile(
+    var priceProjectiles: String = "",
+){
+    override fun toString(): String {
+        return priceProjectiles
+    }
+}
+
+fun calculatePriceChar(price: Price): String {
 
     val diff = (price.close - price.open).roundOffDecimal()
-    val diffInPercentage = ((price.close - price.open) / price.open).roundOffDecimal()
 
-    val diffCloseChar = if (diff > 0) "▲" else if (diff < 0) "▼" else "▶"
+    val diffCloseChar = when {
+        diff > 0 -> "${color_green}▲${color_default}"
+        diff < 0 -> "${color_red}▼${color_default}"
+        else -> "${color_yellow}▶${color_default}"
+    }
 
     val diffHigh = ((price.high - price.open)).roundOffDecimal()
     val diffLow = ((price.low - price.open)).roundOffDecimal()
 
-    val diffHighChar = if (diffHigh > 0) "↑" else "↓"
-    val diffLowChar = if (diffLow > 0) "↑" else "↓"
+    val diffHighChar = if (diffHigh > 0) "${color_green}↑${color_default}" else "${color_red}↓${color_default}"
+    val diffLowChar = if (diffLow > 0) "${color_green}↑${color_default}" else "${color_red}↓${color_default}"
 
-    return "$diffCloseChar " + "${price.open.roundOffDecimal()} " + "(${diff}/${diffInPercentage}%), " + "H $diffHighChar $diffHigh, " + "L $diffLowChar $diffLow   " + "${price.time} : ${price.interval}"
+    return "$diffCloseChar$diffHighChar$diffLowChar$diffCloseChar"
 }
+
+fun getPriceProjectileString(listOfPrices : List<Price>) = listOfPrices.map {
+    "${calculatePriceChar(it)} - ${it.interval}"
+    }.joinToString ( ", " )

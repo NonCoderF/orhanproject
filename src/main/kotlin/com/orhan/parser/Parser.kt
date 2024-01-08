@@ -14,12 +14,13 @@ data class Price(
     val high: Float,
     val low: Float,
     val close: Float,
+    val volume: Long,
     val time: String,
     val interval: String
 )
 
-suspend fun parsePrice(): JsonObject {
-    val url = URL("http://127.0.0.1:5000?ticker=TATASTEEL.NS&interval=1m&period=1d")
+suspend fun parsePrice(ticker : String): JsonObject {
+    val url = URL("http://127.0.0.1:5000?ticker=$ticker&interval=1m&period=1d")
 
     var responseString = ""
 
@@ -62,6 +63,9 @@ fun parseWindow(json: JsonObject, interval: String = ""): Price {
     val r3 = (json["Low"] as JsonObject).keys.toList()
     val lowPrice = (json["Low"] as JsonObject).float(r3[r3.size - findIndex(r3)]) ?: 0F
 
+    val r4 = (json["Volume"] as JsonObject).keys.toList()
+    val volume = (json["Volume"] as JsonObject).long(r4[r4.size - findIndex(r4)]) ?: 0L
+
     DateTimeManager.convertDateObject(r1[r1.size - findIndex(r1)].toLong(), DateTimeManager.timeFormat)
 
     val time0 = DateTimeManager.convertDateObject(r1[r1.size - findIndex(r1)].toLong(), DateTimeManager.timeFormat)
@@ -72,6 +76,7 @@ fun parseWindow(json: JsonObject, interval: String = ""): Price {
         high = highPrice,
         low = lowPrice,
         close = closePrice,
+        volume = volume,
         time = "($time0 - $time1)",
         interval = interval
     )

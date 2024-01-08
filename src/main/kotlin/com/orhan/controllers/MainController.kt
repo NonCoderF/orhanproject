@@ -1,11 +1,11 @@
 package com.orhan.controllers
 
 import com.google.gson.Gson
-import com.orhan.calculations.calculate
+import com.orhan.calculations.Projectile
+import com.orhan.calculations.getPriceProjectileString
 import com.orhan.data.Directive
 import com.orhan.parser.parsePrice
 import com.orhan.parser.parseWindow
-import com.orhan.utils.DateTimeManager
 import io.ktor.client.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
@@ -49,43 +48,26 @@ class MainController(
 
                         while (true) {
 
-                            val prices = parsePrice()
+                            val prices = parsePrice(ticker = directive.ticker)
 
                             val day = parseWindow(json = prices, interval = "1d")
                             val last90min = parseWindow(json = prices, interval = "90m")
                             val last60min = parseWindow(json = prices, interval = "60m")
-                            val last30min = parseWindow(json = prices, interval = "30m")
                             val last15min = parseWindow(json = prices, interval = "15m")
                             val last5min = parseWindow(json = prices, interval = "5m")
                             val last1min = parseWindow(json = prices, interval = "1m")
 
-                            val r: MutableList<String> = ArrayList()
-
-                            r.apply {
-                                add(calculate(day))
-                                add(calculate(last90min))
-                                add(calculate(last60min))
-                                add(calculate(last30min))
-                                add(calculate(last15min))
-                                add(calculate(last5min))
-                                add(calculate(last1min))
-                            }
-
-                            val a = JSONObject()
-
-                            a.put("close", day.close)
-                            a.put("data", r)
-
-                            a.put(
-                                "time", DateTimeManager.convertDateObject(
-                                    Date().time,
-                                    DateTimeManager.timeFormatSecs
-                                )
+                            val pricesString = getPriceProjectileString(
+                                listOf(day, last90min, last60min, last15min, last5min, last1min)
                             )
 
-                            member.socket.send(Frame.Text(a.toString(2)))
+                            val x = Projectile(pricesString)
 
-                            delay(5 * 1000)
+                            val xString = "Projectiles : " + x.toString() + " >> " + day.close
+
+                            member.socket.send(Frame.Text(xString))
+
+                            delay(1 * 1000)
                         }
                     }
 

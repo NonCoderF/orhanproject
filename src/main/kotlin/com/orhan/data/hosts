@@ -1,2 +1,2 @@
-wsc -er ws://orhanproject.herokuapp.com/socket?userId=dev
-{"receivers":["dev"]}
+wsc -er ws://0.0.0.0:8082/socket?userId=dev
+{"receivers":["dev"], "ticker": "TATASTEEL.NS"}
