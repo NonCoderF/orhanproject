@@ -31,7 +31,7 @@ fun calculatePriceChar(price: Price): String {
     val diffHighChar = if (diffHigh > 0) "${color_green}↑${color_default}" else "${color_red}↓${color_default}"
     val diffLowChar = if (diffLow > 0) "${color_green}↑${color_default}" else "${color_red}↓${color_default}"
 
-    return "$diffCloseChar$diffHighChar$diffLowChar$diffCloseChar"
+    return "$diffCloseChar$diffHighChar$diffLowChar"
 }
 
 fun getPriceProjectileString(listOfPrices : List<Price>) = listOfPrices.map {

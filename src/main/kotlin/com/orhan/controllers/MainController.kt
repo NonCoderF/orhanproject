@@ -6,18 +6,19 @@ import com.orhan.calculations.getPriceProjectileString
 import com.orhan.data.Directive
 import com.orhan.parser.parsePrice
 import com.orhan.parser.parseWindow
+import com.orhan.memory.Memory
 import io.ktor.client.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
 class MainController(
-    val httpClient: HttpClient
+    val httpClient: HttpClient,
+    val memory : Memory
 ) {
 
     private val members = ConcurrentHashMap<String, Member>()
@@ -63,7 +64,7 @@ class MainController(
 
                             val x = Projectile(pricesString)
 
-                            val xString = "Projectiles : " + x.toString() + " >> " + day.close
+                            val xString = "Projectiles : " + x.toString() + " >> " + day.close + ".." + memory.count()
 
                             member.socket.send(Frame.Text(xString))
 
