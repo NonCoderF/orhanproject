@@ -25,14 +25,14 @@ class Memory {
             prices.dropLast(1)
         }
 
-        val isOnUptrend = pricesList.map { it.close - it.open }
+        val trendCount = pricesList.map { it.close - it.open }
 
-        val trueCount = isOnUptrend.count { it > 0 }
-        val falseCount = isOnUptrend.count { it <= 0 }
+        val trueCount = trendCount.count { it > 0 }
+        val falseCount = trendCount.count { it <= 0 }
 
         return trueCount > falseCount
     }
 
-    fun getVoterStats(voters : Boolean) : String = if (voters) "${color_green}▲$color_default" else "${color_red}▼$color_default"
+    fun getVoterStats(voters : Boolean) : String = if (voters) "${color_green}BUY : ▲$color_default" else "${color_red} SELL : ▼$color_default"
 
 }
