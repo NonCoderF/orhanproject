@@ -276,13 +276,6 @@
       <option name="presentableId" value="Default" />
       <updated>1663506617324</updated>
     </task>
-    <task id="LOCAL-00015" summary="responder coroutine added">
-      <created>1663519694077</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1663519694077</updated>
-    </task>
     <task id="LOCAL-00016" summary="responder coroutine added">
       <created>1663520558690</created>
       <option name="number" value="00016" />
@@ -619,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1711389757677</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Encapsulate model">
+      <created>1711394990850</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1711394990851</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

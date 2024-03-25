@@ -82,18 +82,4 @@ class AveragingModel {
         }
 
     }
-
-    private fun getActionSuggestion(voter: Voter): String {
-        return when (voter.marketRegime) {
-            MarketRegime.TRENDING -> {
-                if (voter.sellerPercentage > voter.buyerPercentage) {
-                    "Sell"
-                } else {
-                    "Buy"
-                }
-            }
-            MarketRegime.RANGING -> "Retain position"
-            MarketRegime.CHOPPY -> "High volatility"
-        }
-    }
 }
