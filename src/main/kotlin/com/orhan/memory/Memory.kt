@@ -110,6 +110,7 @@ class Memory {
             averageTrueRange > 1.0 -> MarketRegime.CHOPPY
             else -> MarketRegime.TRENDING
         }
+
     }
 
     private fun getActionSuggestion(voter: Voter): String {
