@@ -57,8 +57,8 @@ class Memory {
         val trueCount = trendCount.count { it > 0 }
         val falseCount = trendCount.count { it <= 0 }
 
-        val volatilitySD = calculateStandardDeviation(flattenedPrices.map { it.close })
-        val volatilityATR = calculateATR(flattenedPrices, 14)
+        val volatilitySD = calculateStandardDeviation(pricesList[pricesList.size - 1].map { it.close })
+        val volatilityATR = calculateATR(prices.map { it }, 14)
 
         val marketRegime = detectMarketRegime(pricesList[pricesList.size - 1].toList())
 
@@ -88,14 +88,19 @@ class Memory {
     }
 
     private fun calculateATR(prices: List<Price>, period: Int): Float {
+        if (prices.size < period) return 0f  // Return 0 if insufficient data
+
         val atrValues = mutableListOf<Float>()
         for (i in period until prices.size) {
-            val tr = maxOf(prices[i].high - prices[i].low,
+            val tr = maxOf(
+                prices[i].high - prices[i].low,
                 abs(prices[i].high - prices[i - 1].close),
-                abs(prices[i].low - prices[i - 1].close))
+                abs(prices[i].low - prices[i - 1].close)
+            )
             atrValues.add(tr)
         }
-        return atrValues.average().toFloat()
+
+        return if (atrValues.isEmpty()) 0f else atrValues.average().toFloat()
     }
 
     private fun detectMarketRegime(prices: List<Price>): MarketRegime {
@@ -120,6 +125,4 @@ class Memory {
             MarketRegime.CHOPPY -> "High volatility"
         }
     }
-
-
 }
