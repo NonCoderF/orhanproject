@@ -46,19 +46,10 @@ class AveragingModel {
             sellerPercentage = ((falseCount.toFloat() / trendCount.size.toFloat()) * 100).toInt(),
             buyerPercentage = ((trueCount.toFloat() / trendCount.size.toFloat()) * 100).toInt(),
             volumePercentage = ((volumeSum.toFloat() / lastVolumeSummation.toFloat()) * 100).toInt(),
-            volatilitySD = volatilitySD,
-            volatilityATR = volatilityATR,
+            volatility = Pair(volatilitySD, volatilityATR),
             marketRegime = marketRegime,
             decision = if (trueCount > falseCount) VoterDecision.BUY else VoterDecision.SELL
         )
-    }
-
-    fun getVoterStats(voter: Voter): String {
-        return color_default + " : Decision  : " + voter.decision.color + voter.decision.name + " ${voter.decision.symbol}" +
-                color_default + ": Percentiles : $color_green${voter.buyerPercentage}%$color_default/$color_red${voter.sellerPercentage}%" +
-                color_default + " - Interest : " + (if (voter.volumePercentage < 100) color_red else color_green) + " ${voter.volumePercentage}%" +
-                color_default + " - Volatility : (${voter.volatilitySD.roundOffDecimal()}/${voter.volatilityATR.roundOffDecimal()})" +
-                color_default + " - Suggestion : " + getActionSuggestion(voter)
     }
 
     private fun calculateStandardDeviation(prices: List<Float>): Float {

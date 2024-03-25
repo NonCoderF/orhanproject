@@ -25,8 +25,7 @@ data class Voter(
     var sellerPercentage: Int = 0,
     var buyerPercentage: Int = 0,
     var volumePercentage: Int = 0,
-    var volatilitySD: Float = 0f,
-    var volatilityATR: Float = 0f,
+    var volatility: Pair<Float, Float> = Pair(0f, 0f),
     var marketRegime: MarketRegime = MarketRegime.TRENDING,
     var decision: VoterDecision = VoterDecision.BUY
 )
@@ -46,7 +45,7 @@ class Memory {
         return color_default + " : Decision  : " + voter.decision.color + voter.decision.name + " ${voter.decision.symbol}" +
                 color_default + ": Percentiles : $color_green${voter.buyerPercentage}%$color_default/$color_red${voter.sellerPercentage}%" +
                 color_default + " - Interest : " + (if (voter.volumePercentage < 100) color_red else color_green) + " ${voter.volumePercentage}%" +
-                color_default + " - Volatility : (${voter.volatilitySD.roundOffDecimal()}/${voter.volatilityATR.roundOffDecimal()})" +
+                color_default + " - Volatility : (${voter.volatility.first.roundOffDecimal()}/${voter.volatility.second.roundOffDecimal()})" +
                 color_default + " - Suggestion : " + getActionSuggestion(voter)
     }
 
