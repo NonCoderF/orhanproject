@@ -64,15 +64,15 @@ class MainController(
 
                             val projectile = Projectile(pricesString)
 
-                            val memoryExecution = memory.execute(
+                            val voter = memory.execute(
                                 day, last90min, last60min,
                                 last15min, last5min, last1min
                             )
 
                             val xString = "Projectiles : " +
                                     projectile.toString() + " >> " +
-                                    day.close + " : Voters decision : " +
-                                    memory.getVoterStats(memoryExecution)
+                                    day.close + " : " +
+                                    memory.getVoterStats(voter)
 
                             member.socket.send(Frame.Text(xString))
 
