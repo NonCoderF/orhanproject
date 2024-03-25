@@ -12,6 +12,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 const val FRAME_SIZE = 10
+const val VOLATILITY_CONSTANT = 14
 
 enum class VoterDecision(val color: String, val symbol: String) {
     BUY(color_green, "▲"), SELL(color_red, "▼")
@@ -58,7 +59,7 @@ class Memory {
         val falseCount = trendCount.count { it <= 0 }
 
         val volatilitySD = calculateStandardDeviation(pricesList[pricesList.size - 1].map { it.close })
-        val volatilityATR = calculateATR(prices.map { it }, 14)
+        val volatilityATR = calculateATR(prices.map { it }, VOLATILITY_CONSTANT)
 
         val marketRegime = detectMarketRegime(pricesList[pricesList.size - 1].toList())
 
@@ -89,7 +90,6 @@ class Memory {
 
     private fun calculateATR(prices: List<Price>, period: Int): Float {
         if (prices.size < period) return 0f  // Return 0 if insufficient data
-
         val atrValues = mutableListOf<Float>()
         for (i in period until prices.size) {
             val tr = maxOf(
@@ -104,7 +104,7 @@ class Memory {
     }
 
     private fun detectMarketRegime(prices: List<Price>): MarketRegime {
-        val averageTrueRange = calculateATR(prices, 14)
+        val averageTrueRange = calculateATR(prices, VOLATILITY_CONSTANT)
         return when {
             averageTrueRange < 0.5 -> MarketRegime.RANGING
             averageTrueRange > 1.0 -> MarketRegime.CHOPPY
