@@ -11,7 +11,6 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 const val FRAME_SIZE = 10
-const val VOLATILITY_CONSTANT = 14
 
 class AveragingModel {
 
@@ -37,8 +36,10 @@ class AveragingModel {
         val trueCount = trendCount.count { it > 0 }
         val falseCount = trendCount.count { it <= 0 }
 
-        val volatilitySD = calculateStandardDeviation(pricesList[pricesList.size - 1].map { it.close })
-        val volatilityATR = calculateATR(prices.map { it }, VOLATILITY_CONSTANT)
+        val lastColumn = pricesList.map { it.last() }
+
+        val volatilitySD = calculateStandardDeviation(lastColumn.map { it.close })
+        val volatilityATR = calculateATR(lastColumn.toList())
 
         val marketRegime = detectMarketRegime(pricesList[pricesList.size - 1].toList())
 
@@ -58,14 +59,14 @@ class AveragingModel {
         return sqrt(variance).toFloat()
     }
 
-    private fun calculateATR(prices: List<Price>, period: Int): Float {
-        if (prices.size < period) return 0f  // Return 0 if insufficient data
+    private fun calculateATR(prices: List<Price>): Float {
         val atrValues = mutableListOf<Float>()
-        for (i in period until prices.size) {
+
+        prices.forEach {price ->
             val tr = maxOf(
-                prices[i].high - prices[i].low,
-                abs(prices[i].high - prices[i - 1].close),
-                abs(prices[i].low - prices[i - 1].close)
+                price.high - price.low,
+                abs(price.high - price.close),
+                abs(price.low - price.close)
             )
             atrValues.add(tr)
         }
@@ -74,7 +75,7 @@ class AveragingModel {
     }
 
     private fun detectMarketRegime(prices: List<Price>): MarketRegime {
-        val averageTrueRange = calculateATR(prices, VOLATILITY_CONSTANT)
+        val averageTrueRange = calculateATR(prices)
         return when {
             averageTrueRange < 0.5 -> MarketRegime.RANGING
             averageTrueRange > 1.0 -> MarketRegime.CHOPPY

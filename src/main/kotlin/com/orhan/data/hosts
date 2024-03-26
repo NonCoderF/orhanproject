@@ -1,2 +1,3 @@
 wsc -er ws://0.0.0.0:8082/socket?userId=dev
-{"receivers":["dev"], "ticker": "TATASTEEL.NS"}
+{"receivers":["dev", "dev1"], "ticker": "TATASTEEL.NS"}
+{"receivers":["dev", "dev1"], "ticker": "COALINDIA.NS"}

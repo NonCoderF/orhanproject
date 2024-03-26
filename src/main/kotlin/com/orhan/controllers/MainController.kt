@@ -41,46 +41,41 @@ class MainController(
 
             val directive = Gson().fromJson(message, Directive::class.java)
 
-            members.values.forEach { member ->
+            while (members.isNotEmpty()){
 
-                if (member.userId in directive.receivers) {
+                members.values.forEach { member ->
 
-                    while (true) {
+                    if(directive.receivers.contains(member.userId)){
+                        val prices = parsePrice(ticker = directive.ticker)
 
-                        while (true) {
+                        val day = parseWindow(json = prices, interval = "1d")
+                        val last90min = parseWindow(json = prices, interval = "90m")
+                        val last60min = parseWindow(json = prices, interval = "60m")
+                        val last15min = parseWindow(json = prices, interval = "15m")
+                        val last5min = parseWindow(json = prices, interval = "5m")
+                        val last1min = parseWindow(json = prices, interval = "1m")
 
-                            val prices = parsePrice(ticker = directive.ticker)
+                        val pricesString = getPriceProjectileString(
+                            listOf(day, last90min, last60min, last15min, last5min, last1min)
+                        )
 
-                            val day = parseWindow(json = prices, interval = "1d")
-                            val last90min = parseWindow(json = prices, interval = "90m")
-                            val last60min = parseWindow(json = prices, interval = "60m")
-                            val last15min = parseWindow(json = prices, interval = "15m")
-                            val last5min = parseWindow(json = prices, interval = "5m")
-                            val last1min = parseWindow(json = prices, interval = "1m")
+                        val projectile = Projectile(pricesString)
 
-                            val pricesString = getPriceProjectileString(
-                                listOf(day, last90min, last60min, last15min, last5min, last1min)
-                            )
+                        val voter = memory.execute(
+                            day, last90min, last60min,
+                            last15min, last5min, last1min
+                        )
 
-                            val projectile = Projectile(pricesString)
+                        val xString = "Projectiles : " +
+                                projectile.toString() + " >> " +
+                                day.close + " : " +
+                                memory.getVoterStats(voter)
 
-                            val voter = memory.execute(
-                                day, last90min, last60min,
-                                last15min, last5min, last1min
-                            )
-
-                            val xString = "Projectiles : " +
-                                    projectile.toString() + " >> " +
-                                    day.close + " : " +
-                                    memory.getVoterStats(voter)
-
-                            member.socket.send(Frame.Text(xString))
-
-                            delay(1 * 1000)
-                        }
+                        member.socket.send(Frame.Text(xString))
                     }
-
                 }
+
+                delay(1 * 1000)
             }
         }
     }
