@@ -10,6 +10,9 @@ Symbols using
 
 Example scenario: ▲ ↑ ↑ : Market is on uptrend bulls are stronger than bear simple is that
 
+
+https://github.com/NonCoderF/orhanproject/assets/58435331/45393990-22dc-48e8-a209-0cc73b4917e3
+
+
 The recording is taken targeting the stock COILINDIA.NS
 
-https://github.com/NonCoderF/orhanproject/assets/58435331/17ed6146-41d4-44a2-b423-933f76e7dee4
