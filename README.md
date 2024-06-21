@@ -14,5 +14,5 @@ Example scenario: ▲ ↑ ↑ : Market is on uptrend bulls are stronger than bea
 https://github.com/NonCoderF/orhanproject/assets/58435331/45393990-22dc-48e8-a209-0cc73b4917e3
 
 
-The recording is taken targeting the stock COILINDIA.NS
+The recording is taken targeting the stock COALINDIA.NS
 
