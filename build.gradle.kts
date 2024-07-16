@@ -8,8 +8,8 @@ val h2_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.5.31"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
+    kotlin("jvm") version "1.7.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
 }
 
 group = "com.orhanproject"
@@ -49,6 +49,8 @@ dependencies {
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     implementation ("com.beust:klaxon:5.5")
+
+    implementation ("javazoom:jlayer:1.0.1")
 
 }
 

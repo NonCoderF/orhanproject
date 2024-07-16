@@ -17,32 +17,17 @@ import kotlinx.coroutines.withContext
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 
-enum class VoterDecision(val color: String, val symbol: String) {
-    BUY(color_green, "▲"), SELL(color_red, "▼")
-}
-
-enum class MarketRegime(val color: String) {
-    TRENDING(color_green), // Market is trending
-    RANGING(color_yellow), // Market is ranging (sideways)
-    CHOPPY(color_red) // Market is choppy (volatile)
-}
-
-data class Voter(
-    var sellerPercentage: Int = 0,
-    var buyerPercentage: Int = 0,
-    var marketRegime: MarketRegime = MarketRegime.TRENDING,
-    var decision: VoterDecision = VoterDecision.BUY
-)
-
-class Memory {
+class AppMemory {
 
     private val averagingModel = AveragingModel()
+
+//    private val trendModel = TrendModel()
 
     fun execute(
         vararg prices: Price
     ): String {
 
-        val averageModelString = averagingModel.getVoterStats(averagingModel.execute(*prices))
+        val averageModelString = averagingModel.getVoterStatsWithoutAffixes(averagingModel.execute(*prices))
 
         return averageModelString
     }

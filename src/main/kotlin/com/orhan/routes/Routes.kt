@@ -1,5 +1,6 @@
 package com.orhan.routes
 
+import com.orhan.controllers.AppController
 import com.orhan.controllers.MemberAlreadyConnectedException
 import com.orhan.controllers.MainController
 import com.orhan.session.Session
@@ -46,6 +47,40 @@ fun Route.orderSocket(mainController: MainController) {
         }
     }
 
+}
+
+fun Route.appSocket(appController: AppController) {
+    webSocket("/app"){
+        val session = call.sessions.get<Session>()
+        if(session == null) {
+            close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session."))
+            return@webSocket
+        }
+        try {
+            appController.onJoin(
+                userId = session.userId,
+                sessionId = session.sessionId,
+                socket = this
+            )
+
+            incoming.consumeEach { frame ->
+                if(frame is Frame.Text) {
+
+                    appController.sendMessage(
+                        senderId = session.userId,
+                        message = frame.readText()
+                    )
+
+                }
+            }
+        } catch(e: MemberAlreadyConnectedException) {
+            call.respond(HttpStatusCode.Conflict)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            appController.tryDisconnect(session.userId)
+        }
+    }
 }
 
 fun Route.getTesting() {

@@ -15,7 +15,7 @@ data class Projectile(
     }
 }
 
-fun calculatePriceChar(price: Price): String {
+fun calculatePriceCharWithColor(price: Price): String {
 
     val diff = (price.close - price.open).roundOffDecimal()
 
@@ -34,6 +34,29 @@ fun calculatePriceChar(price: Price): String {
     return "$diffCloseChar$diffHighChar$diffLowChar"
 }
 
-fun getPriceProjectileString(listOfPrices : List<Price>) = listOfPrices.map {
-    "${calculatePriceChar(it)} - ${it.interval}"
+fun calculatePriceCharWithoutColor(price: Price): String {
+
+    val diff = (price.close - price.open).roundOffDecimal()
+
+    val diffCloseChar = when {
+        diff > 0 -> "▲"
+        diff < 0 -> "▼"
+        else -> "▶"
+    }
+
+    val diffHigh = ((price.high - price.open)).roundOffDecimal()
+    val diffLow = ((price.low - price.open)).roundOffDecimal()
+
+    val diffHighChar = if (diffHigh > 0) "↑" else "↓"
+    val diffLowChar = if (diffLow > 0) "↑" else "↓"
+
+    return "$diffCloseChar$diffHighChar$diffLowChar"
+}
+
+fun getPriceProjectileStringWithColor(listOfPrices : List<Price>) = listOfPrices.map {
+    "${calculatePriceCharWithColor(it)} - ${it.interval}"
     }.joinToString ( ", " )
+
+fun getPriceProjectileStringWithoutColor(listOfPrices : List<Price>) = listOfPrices.map {
+    "${calculatePriceCharWithoutColor(it)} - ${it.interval}"
+}.joinToString ( ", " )

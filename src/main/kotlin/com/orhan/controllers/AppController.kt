@@ -3,7 +3,9 @@ package com.orhan.controllers
 import com.google.gson.Gson
 import com.orhan.calculations.Projectile
 import com.orhan.calculations.getPriceProjectileStringWithColor
+import com.orhan.calculations.getPriceProjectileStringWithoutColor
 import com.orhan.data.Directive
+import com.orhan.memory.AppMemory
 import com.orhan.memory.Memory
 import com.orhan.parser.parsePrice
 import com.orhan.parser.parseWindow
@@ -14,13 +16,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.set
 
-class MainController(
+class AppController(
     val httpClient: HttpClient,
-    val memory: Memory
+    val memory: AppMemory
 ) {
-
     private val members = ConcurrentHashMap<String, Member>()
 
     fun onJoin(
@@ -55,7 +55,7 @@ class MainController(
                         val last5min = parseWindow(json = prices, interval = "5m")
                         val last1min = parseWindow(json = prices, interval = "1m")
 
-                        val pricesString = getPriceProjectileStringWithColor(
+                        val pricesString = getPriceProjectileStringWithoutColor(
                             listOf(day, last90min, last60min, last15min, last5min, last1min)
                         )
 
@@ -66,8 +66,7 @@ class MainController(
                             last15min, last5min, last1min
                         )
 
-                        val xString = "Projectiles : " +
-                                projectile.toString() + " >> " +
+                        val xString = projectile.toString() + " >> " +
                                 day.close + " : " +
                                 memory
 

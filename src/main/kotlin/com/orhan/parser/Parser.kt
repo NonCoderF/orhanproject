@@ -5,6 +5,7 @@ import com.beust.klaxon.Klaxon
 import com.orhan.utils.DateTimeManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.StringReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -20,7 +21,7 @@ data class Price(
 )
 
 suspend fun parsePrice(ticker : String): JsonObject {
-    val url = URL("http://127.0.0.1:5000?ticker=$ticker&interval=1m&period=1d")
+    val url = URL("http://0.0.0.0:5001?ticker=$ticker&interval=1m&period=1d")
 
     var responseString = ""
 
@@ -51,25 +52,20 @@ fun parseWindow(json: JsonObject, interval: String = ""): Price {
         else -> 1
     }
 
-    val r = (json["Close"] as JsonObject).keys.toList()
-    val closePrice = (json["Close"] as JsonObject).float(r[r.size - 1]) ?: 0F
+    val closeKeys = (json["Close"] as JsonObject).map.keys.toList()
+    val openKeys = (json["Open"] as JsonObject).map.keys.toList()
+    val highKeys = (json["High"] as JsonObject).map.keys.toList()
+    val lowKeys = (json["Low"] as JsonObject).map.keys.toList()
+    val volumeKeys = (json["Volume"] as JsonObject).map.keys.toList()
 
-    val r1 = (json["Open"] as JsonObject).keys.toList()
-    val openPrice = (json["Open"] as JsonObject).float(r1[r1.size - findIndex(r1)]) ?: 0F
+    val closePrice = (json["Close"] as JsonObject).double(closeKeys.last())?.toFloat() ?: 0F
+    val openPrice = (json["Open"] as JsonObject).double(openKeys[openKeys.size - findIndex(openKeys)])?.toFloat() ?: 0F
+    val highPrice = (json["High"] as JsonObject).double(highKeys[highKeys.size - findIndex(highKeys)])?.toFloat() ?: 0F
+    val lowPrice = (json["Low"] as JsonObject).double(lowKeys[lowKeys.size - findIndex(lowKeys)])?.toFloat() ?: 0F
+    val volume = (json["Volume"] as JsonObject).long(volumeKeys[volumeKeys.size - findIndex(volumeKeys)]) ?: 0L
 
-    val r2 = (json["High"] as JsonObject).keys.toList()
-    val highPrice = (json["High"] as JsonObject).float(r2[r2.size - findIndex(r2)]) ?: 0F
-
-    val r3 = (json["Low"] as JsonObject).keys.toList()
-    val lowPrice = (json["Low"] as JsonObject).float(r3[r3.size - findIndex(r3)]) ?: 0F
-
-    val r4 = (json["Volume"] as JsonObject).keys.toList()
-    val volume = (json["Volume"] as JsonObject).long(r4[r4.size - findIndex(r4)]) ?: 0L
-
-    DateTimeManager.convertDateObject(r1[r1.size - findIndex(r1)].toLong(), DateTimeManager.timeFormat)
-
-    val time0 = DateTimeManager.convertDateObject(r1[r1.size - findIndex(r1)].toLong(), DateTimeManager.timeFormat)
-    val time1 = DateTimeManager.convertDateObject(r1[r1.size - 1].toLong(), DateTimeManager.timeFormat)
+    val time0 = DateTimeManager.convertDateObject(openKeys[openKeys.size - findIndex(openKeys)].toLong(), DateTimeManager.timeFormat)
+    val time1 = DateTimeManager.convertDateObject(openKeys.last().toLong(), DateTimeManager.timeFormat)
 
     return Price(
         open = openPrice,

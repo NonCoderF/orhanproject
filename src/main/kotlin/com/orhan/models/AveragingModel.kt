@@ -1,5 +1,6 @@
 package com.orhan.models
 
+import com.google.gson.Gson
 import com.orhan.extensions.roundOffDecimal
 import com.orhan.memory.*
 import com.orhan.parser.Price
@@ -10,9 +11,19 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-const val FRAME_SIZE = 10
+const val FRAME_SIZE = 20
 
 class AveragingModel {
+
+    fun getVoterStatsWithoutAffixes(voter: Voter): String {
+        return voter.decision.name + " ${voter.decision.symbol}" + "${voter.buyerPercentage}%/${voter.sellerPercentage}%" + " : " + getActionSuggestion(voter)
+    }
+
+    fun getVoterStats(voter: Voter): String {
+        return color_default + " : Decision  : " + voter.decision.color + voter.decision.name + " ${voter.decision.symbol}" +
+                color_default + ": Percentiles : $color_green${voter.buyerPercentage}%$color_default/$color_red${voter.sellerPercentage}%" +
+                color_default + " - Suggestion : " + getActionSuggestion(voter)
+    }
 
     private var pricesList: MutableList<Array<out Price>> = mutableListOf()
 
@@ -30,33 +41,19 @@ class AveragingModel {
 
         val trendCount = flattenedPrices.map { it.close - it.open }
 
-        val volumeSum = flattenedPrices.sumOf { it.volume } / pricesList.size
-        val lastVolumeSummation = pricesList[pricesList.size - 1].sumOf { it.volume }
-
         val trueCount = trendCount.count { it > 0 }
         val falseCount = trendCount.count { it <= 0 }
 
         val lastColumn = pricesList.map { it.last() }
-
-        val volatilitySD = calculateStandardDeviation(lastColumn.map { it.close })
-        val volatilityATR = calculateATR(lastColumn.toList())
 
         val marketRegime = detectMarketRegime(pricesList[pricesList.size - 1].toList())
 
         return Voter(
             sellerPercentage = ((falseCount.toFloat() / trendCount.size.toFloat()) * 100).toInt(),
             buyerPercentage = ((trueCount.toFloat() / trendCount.size.toFloat()) * 100).toInt(),
-            volumePercentage = ((volumeSum.toFloat() / lastVolumeSummation.toFloat()) * 100).toInt(),
-            volatility = Pair(volatilitySD, volatilityATR),
             marketRegime = marketRegime,
             decision = if (trueCount > falseCount) VoterDecision.BUY else VoterDecision.SELL
         )
-    }
-
-    private fun calculateStandardDeviation(prices: List<Float>): Float {
-        val mean = prices.average()
-        val variance = prices.map { (it - mean).pow(2) }.sum() / prices.size
-        return sqrt(variance).toFloat()
     }
 
     private fun calculateATR(prices: List<Price>): Float {
@@ -82,5 +79,21 @@ class AveragingModel {
             else -> MarketRegime.TRENDING
         }
 
+    }
+
+    private fun getActionSuggestion(voter: Voter): String {
+        val action = when (voter.marketRegime) {
+            MarketRegime.TRENDING -> {
+                if (voter.sellerPercentage > voter.buyerPercentage) {
+                    "Sell"
+                } else {
+                    "Buy"
+                }
+            }
+            MarketRegime.RANGING -> "Retain position"
+            MarketRegime.CHOPPY -> "High volatility"
+        }
+
+        return action
     }
 }
