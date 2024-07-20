@@ -2,6 +2,7 @@ package com.orhan.memory
 
 import com.orhan.extensions.roundOffDecimal
 import com.orhan.models.AveragingModel
+import com.orhan.models.PredictiveModel
 import com.orhan.models.TrendModel
 import com.orhan.parser.Price
 import com.orhan.theme.color_default
@@ -18,7 +19,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 
 enum class VoterDecision(val color: String, val symbol: String) {
-    BUY(color_green, "▲"), SELL(color_red, "▼")
+    BUY(color_green, "▲"), SELL(color_red, "▼"), NOTHING(color_red, "-")
 }
 
 enum class MarketRegime(val color: String) {
@@ -30,13 +31,18 @@ enum class MarketRegime(val color: String) {
 data class Voter(
     var sellerPercentage: Int = 0,
     var buyerPercentage: Int = 0,
+    var volumeTrend: VolumeTrend = VolumeTrend.STABLE,
     var marketRegime: MarketRegime = MarketRegime.TRENDING,
     var decision: VoterDecision = VoterDecision.BUY
 )
+enum class VolumeTrend {
+    INCREASED, DECREASED, STABLE
+}
 
 class Memory {
 
     private val averagingModel = AveragingModel()
+    private val predictiveModel = PredictiveModel()
 
     fun execute(
         vararg prices: Price
@@ -44,6 +50,8 @@ class Memory {
 
         val averageModelString = averagingModel.getVoterStats(averagingModel.execute(*prices))
 
-        return averageModelString
+        val predictiveModelString = predictiveModel.getVoterStats(predictiveModel.execute(*prices))
+
+        return "$averageModelString $predictiveModelString"
     }
 }

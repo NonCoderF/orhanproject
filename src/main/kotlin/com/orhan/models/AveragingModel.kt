@@ -1,17 +1,13 @@
 package com.orhan.models
 
-import com.google.gson.Gson
-import com.orhan.extensions.roundOffDecimal
 import com.orhan.memory.*
 import com.orhan.parser.Price
 import com.orhan.theme.color_default
 import com.orhan.theme.color_green
 import com.orhan.theme.color_red
 import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
-const val FRAME_SIZE = 20
+const val AVG_FRAME_SIZE = 20
 
 class AveragingModel {
 
@@ -31,7 +27,7 @@ class AveragingModel {
         vararg prices: Price
     ): Voter {
 
-        if (pricesList.size > FRAME_SIZE) {
+        if (pricesList.size > AVG_FRAME_SIZE) {
             pricesList.removeAt(0)
         }
 
