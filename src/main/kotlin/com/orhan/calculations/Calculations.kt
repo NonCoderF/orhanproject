@@ -44,13 +44,13 @@ fun calculatePriceCharWithoutColor(price: Price): String {
         else -> "▶"
     }
 
-    val diffHigh = ((price.high - price.open)).roundOffDecimal()
-    val diffLow = ((price.low - price.open)).roundOffDecimal()
+//    val diffHigh = ((price.high - price.open)).roundOffDecimal()
+//    val diffLow = ((price.low - price.open)).roundOffDecimal()
+//
+//    val diffHighChar = if (diffHigh > 0) "↑" else "↓"
+//    val diffLowChar = if (diffLow > 0) "↑" else "↓"
 
-    val diffHighChar = if (diffHigh > 0) "↑" else "↓"
-    val diffLowChar = if (diffLow > 0) "↑" else "↓"
-
-    return "$diffCloseChar$diffHighChar$diffLowChar"
+    return diffCloseChar//$diffHighChar$diffLowChar"
 }
 
 fun getPriceProjectileStringWithColor(listOfPrices : List<Price>) = listOfPrices.map {

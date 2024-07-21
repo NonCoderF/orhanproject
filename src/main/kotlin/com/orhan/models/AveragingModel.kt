@@ -16,9 +16,7 @@ class AveragingModel {
     }
 
     fun getVoterStats(voter: Voter): String {
-        return color_default + " : Decision  : " + voter.decision.color + voter.decision.name + " ${voter.decision.symbol}" +
-                color_default + ": Percentiles : $color_green${voter.buyerPercentage}%$color_default/$color_red${voter.sellerPercentage}%" +
-                color_default + " - Suggestion : " + getActionSuggestion(voter)
+        return color_default + " - AVERAGE : " + getActionSuggestion(voter)
     }
 
     private var pricesList: MutableList<Array<out Price>> = mutableListOf()
@@ -75,21 +73,5 @@ class AveragingModel {
             else -> MarketRegime.TRENDING
         }
 
-    }
-
-    private fun getActionSuggestion(voter: Voter): String {
-        val action = when (voter.marketRegime) {
-            MarketRegime.TRENDING -> {
-                if (voter.sellerPercentage > voter.buyerPercentage) {
-                    "Sell"
-                } else {
-                    "Buy"
-                }
-            }
-            MarketRegime.RANGING -> "Retain position"
-            MarketRegime.CHOPPY -> "High volatility"
-        }
-
-        return action
     }
 }

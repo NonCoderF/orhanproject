@@ -4,6 +4,7 @@ import com.orhan.parser.Price
 import com.orhan.memory.MarketRegime
 import com.orhan.memory.Voter
 import com.orhan.memory.VoterDecision
+import com.orhan.memory.getActionSuggestion
 import com.orhan.theme.color_default
 
 const val PRE_FRAME_SIZE = 60
@@ -37,8 +38,6 @@ class PredictiveModel {
 
         val trueCount = trendCount.count { it > 0 }
         val falseCount = trendCount.count { it <= 0 }
-
-        val lastColumn = pricesList.map { it.last() }
 
         val marketRegime = detectMarketRegime(pricesList[pricesList.size - 1].toList())
 
@@ -98,20 +97,6 @@ class PredictiveModel {
             averageTrueRange < 0.5 -> MarketRegime.RANGING
             averageTrueRange > 1.0 -> MarketRegime.CHOPPY
             else -> MarketRegime.TRENDING
-        }
-    }
-
-    private fun getActionSuggestion(voter: Voter): VoterDecision {
-        return when (voter.marketRegime) {
-            MarketRegime.TRENDING -> {
-                if (voter.sellerPercentage > voter.buyerPercentage) {
-                    VoterDecision.SELL
-                } else {
-                    VoterDecision.BUY
-                }
-            }
-            MarketRegime.RANGING -> VoterDecision.NOTHING
-            MarketRegime.CHOPPY -> VoterDecision.SELL
         }
     }
 }

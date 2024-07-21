@@ -1,9 +1,7 @@
 package com.orhan.memory
 
 import com.orhan.extensions.roundOffDecimal
-import com.orhan.models.AveragingModel
-import com.orhan.models.PredictiveModel
-import com.orhan.models.TrendModel
+import com.orhan.models.*
 import com.orhan.parser.Price
 import com.orhan.theme.color_default
 import com.orhan.theme.color_green
@@ -39,10 +37,30 @@ enum class VolumeTrend {
     INCREASED, DECREASED, STABLE
 }
 
+fun getActionSuggestion(voter: Voter): VoterDecision {
+    return when (voter.marketRegime) {
+        MarketRegime.TRENDING -> {
+            if (voter.sellerPercentage > voter.buyerPercentage) {
+                VoterDecision.SELL
+            } else {
+                VoterDecision.BUY
+            }
+        }
+        MarketRegime.RANGING -> VoterDecision.NOTHING
+        MarketRegime.CHOPPY -> VoterDecision.SELL
+    }
+}
+
 class Memory {
 
     private val averagingModel = AveragingModel()
     private val predictiveModel = PredictiveModel()
+    private val momentumModel = MomentumModel()
+    private val vwapModel = VWAPModel()
+    private val bollingerModel = BollingerBandsModel()
+    private val rsiModel = RSIModel()
+    private val stochModel = StochasticOscillatorModel()
+    private val emaModel = EMACrossoverModel()
 
     fun execute(
         vararg prices: Price
@@ -52,6 +70,25 @@ class Memory {
 
         val predictiveModelString = predictiveModel.getVoterStats(predictiveModel.execute(*prices))
 
-        return "$averageModelString $predictiveModelString"
+        val momentumModelString = momentumModel.getVoterStats(momentumModel.execute(*prices))
+
+        val vwapModelString = vwapModel.getVoterStats(vwapModel.execute(*prices))
+
+        val bollingerModelString = bollingerModel.getVoterStats(bollingerModel.execute(*prices))
+
+        val rsiModelString = rsiModel.getVoterStats(rsiModel.execute(*prices))
+
+        val stochModelString = stochModel.getVoterStats(stochModel.execute(*prices))
+
+        val emaModelString = emaModel.getVoterStats(emaModel.execute(*prices))
+
+        return "$averageModelString " +
+                "$predictiveModelString " +
+                "$momentumModelString " +
+                "$vwapModelString " +
+                "$bollingerModelString " +
+                "$rsiModelString " +
+                "$stochModelString " +
+                "$emaModelString "
     }
 }
